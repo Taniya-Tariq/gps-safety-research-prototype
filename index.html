@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Research Design Prototype: GPS Safety Wearables</title>
+<style>
+:root{--bg:#f7f6f2;--card:#fff;--ink:#1d2330;--mute:#5d6676;--line:#dcdad2;--q:#1f6feb;--ql:#c2410c;--mx:#0f766e;--qbg:#e6efff;--qlbg:#fdeadd;--mxbg:#dcf3ef;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14171d;--card:#1d222b;--ink:#eceff4;--mute:#a0a9b8;--line:#323947;--q:#6aa6ff;--ql:#ff9a62;--mx:#4fd1c0;--qbg:#1b2a47;--qlbg:#3a2517;--mxbg:#12342f}}
+:root[data-theme="dark"]{--bg:#14171d;--card:#1d222b;--ink:#eceff4;--mute:#a0a9b8;--line:#323947;--q:#6aa6ff;--ql:#ff9a62;--mx:#4fd1c0;--qbg:#1b2a47;--qlbg:#3a2517;--mxbg:#12342f}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.5}
+.wrap{max-width:980px;margin:0 auto;padding:20px 16px 48px}
+h1{font-size:1.45rem;margin:0 0 4px}
+.sub{color:var(--mute);margin:0 0 18px;font-size:.95rem}
+.tabs{display:flex;gap:6px;overflow-x:auto;border-bottom:1px solid var(--line);margin-bottom:18px}
+.tab{background:none;border:0;border-bottom:3px solid transparent;padding:10px 12px;font:inherit;color:var(--mute);cursor:pointer;white-space:nowrap}
+.tab[aria-selected="true"]{color:var(--ink);border-color:var(--mx);font-weight:600}
+.panel{display:none}.panel.on{display:block}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.flow{display:flex;flex-direction:column;gap:10px}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.ph{cursor:pointer;text-align:left;font:inherit;color:inherit;border:2px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--card)}
+.ph:hover,.ph[aria-pressed="true"]{border-color:var(--mx)}
+.ph small{display:block;color:var(--mute)}
+.tag{display:inline-block;font-size:.72rem;font-weight:700;border-radius:999px;padding:1px 9px;margin-bottom:6px}
+.t-q{background:var(--qbg);color:var(--q)}.t-ql{background:var(--qlbg);color:var(--ql)}.t-m{background:var(--mxbg);color:var(--mx)}
+.arrow{text-align:center;color:var(--mute);font-size:1.2rem;line-height:1}
+#detail{margin-top:12px;border-left:4px solid var(--mx)}
+#detail h3{margin:0 0 6px;font-size:1.05rem}
+ul{margin:6px 0 0;padding-left:20px}li{margin:3px 0}
+table{width:100%;border-collapse:collapse;font-size:.93rem}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--mute);font-weight:600;font-size:.82rem}
+.scroll{overflow-x:auto}
+.bar{height:10px;border-radius:6px;background:var(--line);overflow:hidden;margin-top:4px}
+.bar i{display:block;height:100%;background:var(--mx)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
+.note{color:var(--mute);font-size:.85rem;margin-top:12px}
+.warn{border-left:4px solid var(--ql)}
+
+#sim .grid{grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+#sim h2{font-size:1.05rem;margin:0 0 8px}
+#sim .watch{width:190px;margin:0 auto;border-radius:44px;border:10px solid #2b303b;background:#0c0f14;color:#fff;padding:18px 10px;text-align:center}
+#sim .watch .t{font-size:1.6rem;font-weight:600}#sim .watch .s{font-size:.78rem;color:#9fe3d8;min-height:34px}
+#sim button{font:inherit;cursor:pointer;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:8px 12px}
+#sim button.p{background:var(--mx);color:#fff;border-color:var(--mx)}
+#sim .sos{width:84px;height:84px;border-radius:50%;background:#c62828;color:#fff;border:0;font-weight:700;font-size:1.1rem;margin:8px 0}
+#sim .map{position:relative;height:250px;background-color:var(--mxbg);border:1px solid var(--line);border-radius:12px;overflow:hidden;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:25px 25px}
+#sim .zone{position:absolute;left:50%;top:50%;width:150px;height:150px;margin:-75px 0 0 -75px;border:2px dashed var(--mx);border-radius:50%;background:rgba(15,118,110,.12)}
+#sim .zl{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:.75rem;color:var(--mx)}
+#sim .dot{position:absolute;width:18px;height:18px;margin:-9px 0 0 -9px;border-radius:50%;background:#1f6feb;border:3px solid #fff;transition:left .4s,top .4s}
+#sim .dot.out{background:#c62828}
+#sim .alert{display:none;margin-top:8px;padding:8px 10px;border-radius:10px;background:rgba(198,40,40,.12);border:1px solid #c62828;color:#c62828;font-weight:600;font-size:.9rem}
+#sim .log{font-size:.82rem;color:var(--mute);max-height:96px;overflow:auto;margin-top:8px}
+#sim .ctrl{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+#sim label{display:block;margin:10px 0 3px;font-weight:600;font-size:.92rem}
+#sim .scale{display:flex;gap:6px}#sim .scale button[aria-pressed="true"]{background:var(--mx);color:#fff;border-color:var(--mx)}
+#sim textarea,#sim select{width:100%;font:inherit;padding:8px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+#sim pre{white-space:pre-wrap;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px;font-size:.85rem}
+#sim .task li{margin:3px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>📍 Research Design Prototype</h1>
+<p class="sub">Tackling safety concerns for women, children and mentally challenged individuals: the role of GPS-based watches and necklaces. Mixed methods, Group 2.</p>
+
+<div class="tabs" role="tablist" id="tabs">
+<button class="tab" role="tab" aria-selected="true" data-p="flow">Design flow</button>
+<button class="tab" role="tab" aria-selected="false" data-p="rq">Research questions</button>
+<button class="tab" role="tab" aria-selected="false" data-p="meth">Methods &amp; sample</button>
+<button class="tab" role="tab" aria-selected="false" data-p="sim">Try the simulation</button>
+<button class="tab" role="tab" aria-selected="false" data-p="pilot">Pilot evidence</button>
+<button class="tab" role="tab" aria-selected="false" data-p="eth">Ethics &amp; gaps</button>
+</div>
+
+<section class="panel on" id="flow">
+<p class="sub">Tap a phase to see what happens in it. Design type: <b>sequential mixed methods with a prototype pilot</b>.</p>
+<div class="flow">
+<button class="ph" data-d="0" aria-pressed="true"><span class="tag t-m">PHASE 1 · CONTEXT</span><b>Problem scoping</b><small>Public safety reports review</small></button>
+<div class="arrow">↓</div>
+<div class="row">
+<button class="ph" data-d="1" aria-pressed="false"><span class="tag t-q">PHASE 2A · QUANT</span><b>Survey</b><small>Google Forms, multi-city</small></button>
+<button class="ph" data-d="2" aria-pressed="false"><span class="tag t-ql">PHASE 2B · QUAL</span><b>Interviews &amp; group discussions</b><small>Concerns, trust, privacy</small></button>
+</div>
+<div class="arrow">↓ integrate findings into requirements</div>
+<button class="ph" data-d="3" aria-pressed="false"><span class="tag t-m">PHASE 3 · BUILD</span><b>GPS prototype development</b><small>ESP32 + SIM808 + SIM800L, companion app</small></button>
+<div class="arrow">↓</div>
+<button class="ph" data-d="4" aria-pressed="false"><span class="tag t-m">PHASE 4 · MIXED</span><b>Pilot test &amp; feedback</b><small>Ratings (quant) + user comments (qual)</small></button>
+<div class="arrow">↓</div>
+<button class="ph" data-d="5" aria-pressed="false"><span class="tag t-m">PHASE 5 · INTEGRATE</span><b>Joint interpretation &amp; recommendations</b><small>Sustainability, ethics, next steps</small></button>
+</div>
+<div class="card" id="detail"></div>
+</section>
+
+<section class="panel" id="rq">
+<div class="card">
+<div class="scroll"><table>
+<tr><th>#</th><th>Research question</th><th>Strand</th><th>Evidence</th></tr>
+<tr><td>RQ1</td><td>What safety concerns do women, parents of children and caregivers of mentally challenged individuals report in public spaces?</td><td><span class="tag t-q">QUANT</span></td><td>Survey</td></tr>
+<tr><td>RQ2</td><td>How do these groups perceive GPS watches and necklaces in terms of usefulness, privacy, dignity and trust?</td><td><span class="tag t-ql">QUAL</span></td><td>Interviews, group discussions</td></tr>
+<tr><td>RQ3</td><td>How well does the prototype perform on usability, location accuracy, alert timeliness, battery life and design?</td><td><span class="tag t-m">MIXED</span></td><td>Pilot ratings and feedback</td></tr>
+<tr><td>RQ4</td><td>To what extent do pilot results confirm or contradict the needs and concerns found in phase 2?</td><td><span class="tag t-m">INTEGRATION</span></td><td>Joint display</td></tr>
+</table></div>
+</div>
+</section>
+
+<section class="panel" id="meth">
+<div class="grid">
+<div class="card"><span class="tag t-q">QUANT</span><h3 style="margin:0 0 4px">Survey</h3><ul><li>Distributed via Google Forms</li><li>Cities: Islamabad, Lahore, Karachi and others</li><li>Topics: safety concerns, feature preferences, willingness to use</li><li>Analysis: descriptive stats, group comparisons</li></ul></div>
+<div class="card"><span class="tag t-ql">QUAL</span><h3 style="margin:0 0 4px">Interviews &amp; groups</h3><ul><li>In-depth interviews and group discussions</li><li>Explore privacy, discreet design, trust</li><li>Analysis: thematic coding</li></ul></div>
+<div class="card"><span class="tag t-m">MIXED</span><h3 style="margin:0 0 4px">Pilot test</h3><ul><li>Friends, family and research participants</li><li>Rate ease of use, accuracy, design, battery</li><li>Open feedback on reliability</li><li>Extension: virtual prototype tested online with parents, caregivers and women</li></ul></div>
+</div>
+<div class="card" style="margin-top:10px"><b>Target groups</b>
+<div class="scroll"><table><tr><th>Group</th><th>Age</th><th>Respondent role</th></tr>
+<tr><td>Children</td><td>7–15</td><td>Parents or guardians answer for them</td></tr>
+<tr><td>Women</td><td>7–35</td><td>Self-report</td></tr>
+<tr><td>Mentally challenged individuals</td><td>Not stated</td><td>Caregivers</td></tr></table></div></div>
+</section>
+
+<section class="panel" id="sim">
+<p class="sub">Try the tasks below, then fill the feedback form. No real device needed. Device style:
+<select id="style" style="width:auto;display:inline-block"><option>Watch</option><option>Necklace</option></select></p>
+
+<div class="card" style="margin-bottom:14px"><h2>Your tasks</h2>
+<ol class="task"><li>Press the red SOS button on the device.</li><li>On the guardian app, press "Walk away" until the person leaves the safe zone.</li><li>Notice the alert, then press "Return to zone".</li></ol></div>
+
+<div class="grid">
+<div class="card"><h2 id="devname">Wearable: Watch</h2>
+<div class="watch"><div class="t" id="clock">--:--</div><div class="s" id="ws">Tracking active</div><button class="sos" id="sos">SOS</button></div>
+<p class="sub" style="text-align:center;margin-top:10px">Hold-style alert sends location to guardian</p></div>
+
+<div class="card"><h2>Guardian app</h2>
+<div class="map"><div class="zone"></div><div class="zl">Safe zone (school/home)</div><div class="dot" id="dot" style="left:50%;top:50%"></div></div>
+<div class="alert" id="alert"></div>
+<div class="ctrl"><button class="p" id="walk">Walk away</button><button id="back">Return to zone</button></div>
+<div class="log" id="log"></div></div>
+</div>
+
+<div class="card" style="margin-top:14px"><h2>Feedback form</h2>
+<div id="qs"></div>
+<label for="pref">Which style would you prefer in real life?</label>
+<select id="pref"><option>Watch</option><option>Necklace</option><option>No preference</option></select>
+<label for="cm">Any concern or suggestion (privacy, dignity, cost)?</label>
+<textarea id="cm" rows="3"></textarea>
+<div class="ctrl"><button class="p" id="sub">Submit</button></div>
+<pre id="out" style="display:none"></pre>
+<p class="sub" style="margin-top:8px">Responses are not saved online. Copy the result text above and paste it into your own sheet.</p></div>
+</section>
+
+<section class="panel" id="pilot">
+<div class="card">
+<div id="bars"></div>
+</div>
+</section>
+
+<section class="panel" id="eth">
+<div class="grid">
+<div class="card warn"><h3 style="margin:0 0 4px">Ethics</h3><ul><li>Guardian consent for children and mentally challenged participants</li><li>Location data privacy, storage and access control</li><li>Risk of surveillance misuse, so keep the person's dignity central</li></ul></div>
+<div class="card"><h3 style="margin:0 0 4px">Limitations</h3><ul><li>Limited face-to-face contact with non-digital users</li><li>Small, mostly female pilot sample</li><li>Mentally challenged individuals under-represented</li><li>Funding, geography and supply-chain constraints</li></ul></div>
+<div class="card"><h3 style="margin:0 0 4px">Next steps</h3><ul><li>Engage underrepresented groups directly</li><li>Test earlier to cut delays</li><li>Widen geographic scope and address affordability</li></ul></div>
+</div>
+</section>
+</div>
+<script>
+var D=[
+["Problem scoping","Review of public safety reports in Pakistan.",["Key challenges: harassment, abduction risk, infrastructure gaps","Context stats: 2,500+ child abductions in Punjab (2023), 6,624 recorded rape cases (2023)","Output: problem statement and research questions"]],
+["Survey (quantitative)","Broad community input on safety and GPS solutions.",["Google Forms sent to a diverse audience across regions","Focus: women's and children's safety in public spaces","Finding: strong demand for real-time location sharing and emergency access"]],
+["Interviews and group discussions (qualitative)","Depth on why people want or fear these devices.",["Privacy of location data was the main concern","Strong preference for small, discreet wearables","Output: themes that shape device and app requirements"]],
+["Prototype development","Findings turned into a working device and app.",["Hardware: SIM808 GPS, ESP32, SIM800L GSM, battery, 3D-printed enclosure","Total device cost about PKR 7,000, self-funded (PKR 2,000 per member)","Software built with help from a CS student developer (PKR 5,000)","The original device is no longer available, so further testing uses the virtual prototype (see the Try the simulation tab)"]],
+["Pilot test and feedback","Does the prototype work for real users?",["Quantitative: accuracy, alert timeliness, battery and overall ratings","Qualitative: peace of mind, awareness, convenience","Output: performance data plus user comments"]],
+["Joint interpretation","Merge both strands to answer RQ4.",["Compare phase 2 needs against pilot results","Address ethics, affordability and trust","Recommendations and future steps"]]];
+var P=[["Overall performance (of 5)",4.78,5],["Battery life (of 5)",3.89,5],["Alerts sent on time (%)",77.8,100],["Location tracking accuracy (%)",66.7,100]];
+function show(i){var d=D[i],h="<h3>"+d[0]+"</h3><div>"+d[1]+"</div><ul>";d[2].forEach(function(x){h+="<li>"+x+"</li>"});document.getElementById("detail").innerHTML=h+"</ul>";
+document.querySelectorAll(".ph").forEach(function(b){b.setAttribute("aria-pressed",b.dataset.d==i)})}
+document.querySelectorAll(".ph").forEach(function(b){b.onclick=function(){show(b.dataset.d)}});
+show(0);
+document.getElementById("bars").innerHTML=P.map(function(p){return '<div style="margin:10px 0"><b>'+p[0]+': '+p[1]+'</b><div class="bar"><i style="width:'+(p[1]/p[2]*100)+'%"></i></div></div>'}).join("");
+document.querySelectorAll(".tab").forEach(function(t){t.onclick=function(){
+document.querySelectorAll(".tab").forEach(function(x){x.setAttribute("aria-selected",x===t)});
+document.querySelectorAll(".panel").forEach(function(p){p.classList.toggle("on",p.id===t.dataset.p)})}});
+
+var Q=[["ease","The device and app were easy to use"],["trust","I would trust this device in an emergency"],["priv","I am comfortable with my location being shared"],["design","The design looks discreet and comfortable"],["use","I would use or buy this device"]];
+var ans={},steps=0,pos=[[50,50],[62,40],[75,30],[88,20],[96,10]],i=0,sosN=0,outN=0;
+function log(m){var l=document.getElementById("log");l.innerHTML=new Date().toLocaleTimeString()+" "+m+"<br>"+l.innerHTML}
+function tick(){var d=new Date();document.getElementById("clock").textContent=d.getHours()+":"+("0"+d.getMinutes()).slice(-2)}
+tick();setInterval(tick,20000);
+function place(){var p=pos[i],d=document.getElementById("dot");d.style.left=p[0]+"%";d.style.top=p[1]+"%";
+var out=i>=2,a=document.getElementById("alert");d.classList.toggle("out",out);
+if(out){a.style.display="block";a.textContent="⚠ Left safe zone! Location sent.";document.getElementById("ws").textContent="Outside safe zone";outN++;log("Safe-zone alert sent")}else{a.style.display="none";document.getElementById("ws").textContent="Tracking active"}}
+document.getElementById("walk").onclick=function(){if(i<pos.length-1){i++;place()}};
+document.getElementById("back").onclick=function(){i=0;place();log("Back in safe zone")};
+document.getElementById("sos").onclick=function(){sosN++;var a=document.getElementById("alert");a.style.display="block";a.textContent="🚨 SOS received! Live location shared.";document.getElementById("ws").textContent="SOS sent";log("SOS alert sent")};
+document.getElementById("style").onchange=function(){var s=this.value;document.getElementById("devname").textContent="Wearable: "+s;document.querySelector(".watch").style.borderRadius=s=="Watch"?"44px":"50%"};
+var h="";Q.forEach(function(q){h+='<label>'+q[1]+' (1 = disagree, 5 = agree)</label><div class="scale" data-k="'+q[0]+'">';for(var n=1;n<=5;n++)h+='<button type="button" aria-pressed="false" data-n="'+n+'">'+n+'</button>';h+="</div>"});
+document.getElementById("qs").innerHTML=h;
+document.querySelectorAll(".scale").forEach(function(s){s.onclick=function(e){var n=e.target.dataset.n;if(!n)return;ans[s.dataset.k]=n;s.querySelectorAll("button").forEach(function(b){b.setAttribute("aria-pressed",b.dataset.n==n)})}});
+document.getElementById("sub").onclick=function(){var o=document.getElementById("out"),t="Device: "+document.getElementById("style").value+"\n";
+Q.forEach(function(q){t+=q[1]+": "+(ans[q[0]]||"not answered")+"\n"});
+t+="Preferred style: "+document.getElementById("pref").value+"\nSOS presses: "+sosN+"\nZone alerts: "+outN+"\nComment: "+(document.getElementById("cm").value||"none");
+o.style.display="block";o.textContent=t};
+
+</script>
+</body>
+</html>
